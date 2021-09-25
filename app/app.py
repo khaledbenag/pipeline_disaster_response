@@ -14,30 +14,30 @@ import numpy as np
 
 app = Flask(__name__)
 
-def tokenize(text):
-    """
-    function to process text 
+# def tokenize(text):
+#     """
+#     function to process text 
 
-    Parameters
-    ----------
-    text : str
-        message to be processed.
+#     Parameters
+#     ----------
+#     text : str
+#         message to be processed.
 
-    Returns
-    -------
-    clean_tokens : str
-        processed message.
+#     Returns
+#     -------
+#     clean_tokens : str
+#         processed message.
 
-    """
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
+#     """
+#     tokens = word_tokenize(text)
+#     lemmatizer = WordNetLemmatizer()
 
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
+#     clean_tokens = []
+#     for tok in tokens:
+#         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+#         clean_tokens.append(clean_tok)
 
-    return clean_tokens
+#     return clean_tokens
 
 # load data
 engine = create_engine('sqlite:///data/DisasterResponse.db')
