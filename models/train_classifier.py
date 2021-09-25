@@ -19,6 +19,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
 from sklearn.model_selection import GridSearchCV
 import joblib
 
@@ -52,32 +54,79 @@ def load_data(database_filepath):
     return X, y, category_names
 
 
-def tokenize(text):
-    """
-    function to process the messages text, normalization, remove stop words,
-    then word lemmatization.
+class Tokenizer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        pass
 
-    Parameters
-    ----------
-    text : str
-        message text.
+    def fit(self, X, y=None):
+        return self
 
-    Returns
-    -------
-    cleaned_tokens : str
-        cleaned message.
+    def transform(self, X):
+        def tokenize(text):
+            """
+            function to process the messages text, normalization, remove stop words,
+            then word lemmatization.
+        
+            Parameters
+            ----------
+            text : str
+                message text.
+        
+            Returns
+            -------
+            cleaned_tokens : str
+                cleaned message.
+        
+            """
+            # Define url pattern
+            url_re = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-    """
-    # Normilize text
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-    # tokenize
-    tokens = nltk.word_tokenize(text)
-    # remove stop words
-    tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
-    # initiate lemmatizer
-    lemmatizer = nltk.WordNetLemmatizer()
-    cleaned_tokens = [lemmatizer.lemmatize(tok) for tok in tokens]
-    return cleaned_tokens
+            # Detect and replace urls
+            detected_urls = re.findall(url_re, text)
+            for url in detected_urls:
+                text = text.replace(url, "urlplaceholder")
+
+            # tokenize sentences
+            tokens = nltk.word_tokenize(text)
+            lemmatizer = nltk.WordNetLemmatizer()
+
+            # save cleaned tokens
+            clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
+
+            # remove stopwords
+            STOPWORDS = list(set(stopwords.words('english')))
+            clean_tokens = [token for token in clean_tokens if token not in STOPWORDS]
+
+            return ' '.join(clean_tokens)
+
+        return pd.Series(X).apply(tokenize).values
+    
+# def tokenize(text):
+#     """
+#     function to process the messages text, normalization, remove stop words,
+#     then word lemmatization.
+
+#     Parameters
+#     ----------
+#     text : str
+#         message text.
+
+#     Returns
+#     -------
+#     cleaned_tokens : str
+#         cleaned message.
+
+#     """
+#     # Normilize text
+#     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+#     # tokenize
+#     tokens = nltk.word_tokenize(text)
+#     # remove stop words
+#     tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
+#     # initiate lemmatizer
+#     lemmatizer = nltk.WordNetLemmatizer()
+#     cleaned_tokens = [lemmatizer.lemmatize(tok) for tok in tokens]
+#     return cleaned_tokens
 
 
 def build_model():
@@ -92,7 +141,7 @@ def build_model():
 
     """
     pipeline = Pipeline([
-        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('vect', CountVectorizer(tokenizer=Tokenizer())),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
