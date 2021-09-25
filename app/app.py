@@ -2,6 +2,9 @@ import json
 import plotly
 import pandas as pd
 
+import re
+import nltk
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
@@ -13,31 +16,57 @@ from sqlalchemy import create_engine
 import numpy as np
 app = Flask(__name__)
 
+# def tokenize(text):
+#     """
+#     function to process text 
+
+#     Parameters
+#     ----------
+#     text : str
+#         message to be processed.
+
+#     Returns
+#     -------
+#     clean_tokens : str
+#         processed message.
+
+#     """
+#     tokens = word_tokenize(text)
+#     lemmatizer = WordNetLemmatizer()
+
+#     clean_tokens = []
+#     for tok in tokens:
+#         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+#         clean_tokens.append(clean_tok)
+
+#     return clean_tokens
+
 def tokenize(text):
     """
-    function to process text 
+    function to process the messages text, normalization, remove stop words,
+    then word lemmatization.
 
     Parameters
     ----------
     text : str
-        message to be processed.
+        message text.
 
     Returns
     -------
-    clean_tokens : str
-        processed message.
+    cleaned_tokens : str
+        cleaned message.
 
     """
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
-
+    # Normilize text
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+    # tokenize
+    tokens = nltk.word_tokenize(text)
+    # remove stop words
+    tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
+    # initiate lemmatizer
+    lemmatizer = nltk.WordNetLemmatizer()
+    cleaned_tokens = [lemmatizer.lemmatize(tok) for tok in tokens]
+    return cleaned_tokens
 
 # load data
 engine = create_engine('sqlite:///data/DisasterResponse.db')
