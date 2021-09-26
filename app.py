@@ -8,12 +8,17 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
+
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
 import numpy as np
+from custom_transformers.transformer import Tokenizer
+
 app = Flask(__name__)
 
 # def tokenize(text):
@@ -41,32 +46,6 @@ app = Flask(__name__)
 
 #     return clean_tokens
 
-def tokenize(text):
-    """
-    function to process the messages text, normalization, remove stop words,
-    then word lemmatization.
-
-    Parameters
-    ----------
-    text : str
-        message text.
-
-    Returns
-    -------
-    cleaned_tokens : str
-        cleaned message.
-
-    """
-    # Normilize text
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-    # tokenize
-    tokens = nltk.word_tokenize(text)
-    # remove stop words
-    tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
-    # initiate lemmatizer
-    lemmatizer = nltk.WordNetLemmatizer()
-    cleaned_tokens = [lemmatizer.lemmatize(tok) for tok in tokens]
-    return cleaned_tokens
 
 # load data
 engine = create_engine('sqlite:///data/DisasterResponse.db')
