@@ -21,6 +21,14 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 
 from sklearn.base import BaseEstimator, TransformerMixin
+import os
+
+cwd = os.getcwd()
+cwd_temp = cwd[:-6] # remove models
+sys.path.insert(0, cwd_temp)
+
+import custom_transformers.transformer as cus_transformer 
+sys.path.insert(0, cwd)
 
 from sklearn.model_selection import GridSearchCV
 import joblib
@@ -59,9 +67,9 @@ def load_data(database_filepath):
     return X, y, category_names
 
 
-class Tokenizer(BaseEstimator, TransformerMixin):
-    def __init__(self):
-        pass
+# class Tokenizer(BaseEstimator, TransformerMixin):
+#     def __init__(self):
+#         pass
 
     def fit(self, X, y=None):
         return self
@@ -146,7 +154,7 @@ def build_model():
 
     """
     pipeline = Pipeline([
-        ('custom', Tokenizer()),
+        ('custom', cus_transformer.Tokenizer()),
         ('vect', CountVectorizer()),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
@@ -218,7 +226,7 @@ def save_model(model, model_filepath):
 
 def main():
     if True:
-        database_filepath, model_filepath = "../data/DisasterResponse.db", "classifier.pkl" #sys.argv[1:]
+        database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
