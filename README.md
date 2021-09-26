@@ -41,18 +41,21 @@ In this project, data engineering skills are applied to analyze disaster data an
 
     - To run ETL pipeline that cleans data and stores in database
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
-    - To run ML pipeline that trains classifier and saves
-        `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+    - To run ML pipeline that trains and saves classifier, please go to models folder (in bash: cd models)
+        `python train_classifier.py data/DisasterResponse.db classifier.pkl`
+        the model is saved in a dill format.
 
 2. Run the following command in the app's directory to run your web app.
-    `python run.py`
+    `python app.py`
 
 3. Go to http://0.0.0.0:3001/
 
 # Results
 
 <img src= "figures/disaster-response-project.png">
-     
+
+# Resources
+* Udacity advanced data science nanodegree
      
 # Acknowledgments
 I would thank #Udacity for the data science advanced nanodegree program.
