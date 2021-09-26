@@ -14,12 +14,9 @@ In this project, data engineering skills are applied to analyze disaster data an
 # Project tree
 ```bash
 
-├───app
-│   │   run.py # Flask file that runs app
-│   │
-│   └───templates
-│           go.html # classification result page of web app
-│           master.html # main page of web app
+├───templates
+│       go.html # classification result page of web app
+│       master.html # main page of web app
 │
 ├───data
 │       DisasterResponse.db # database to save clean data to
