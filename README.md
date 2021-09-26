@@ -54,6 +54,14 @@ In this project, data engineering skills are applied to analyze disaster data an
 
 <img src= "figures/disaster-response-project.png">
 
+# Deployment
+The Flask API is deployed into Heroku. Procfile is added to specify the web engine and the starting web script (app.py).
+For deployment some tips are used to avoid some bugs:
+* First the tokenizer function is wrraped into a package to be use the same instance by ML pipeline and the flask app.
+* If the model is saved in a .pkl format, some information used while training of the pipeline are not saved, which generates `__main__ attribute ` bug while deployment. Here we used dill library to overcome this problem.
+
+You can visit the project at: https://disasterregarding.herokuapp.com
+
 # Resources
 * Udacity advanced data science nanodegree
      
