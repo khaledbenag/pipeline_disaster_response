@@ -64,6 +64,9 @@ You can visit the project at: https://disasterregarding.herokuapp.com
 
 # Resources
 * Udacity advanced data science nanodegree
+* The amazing FLask tutorial by Miguel Grinberg: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world-legacy
+* heroku.com
+* The pickle load bug discussion: https://stackoverflow.com/questions/27732354/unable-to-load-files-using-pickle-and-multiple-modules 
      
 # Acknowledgments
 I would thank #Udacity for the data science advanced nanodegree program.
