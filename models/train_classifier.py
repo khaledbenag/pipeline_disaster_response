@@ -20,6 +20,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 
+import dill
+
 from sklearn.base import BaseEstimator, TransformerMixin
 import os
 
@@ -165,8 +167,8 @@ def build_model():
     # add grid search optimization
     # parameters can be ploted using pipeline.get_params().
     parameters = {
-        'clf__estimator__n_estimators': [20, 100],
-        'clf__estimator__max_features': ["auto", "sqrt"],
+        'clf__estimator__n_estimators': [20],
+        'clf__estimator__max_features': ["auto"],
     }
     
     cv = GridSearchCV(pipeline, param_grid=parameters)
@@ -219,13 +221,15 @@ def save_model(model, model_filepath):
     None.
 
     """
-
-    joblib.dump(model, model_filepath, compress=5)
+    # use dill instead to avoid pickl load bug
+    with open(model_filepath,'wb') as io:
+        dill.dump(model,io)
+    #joblib.dump(model, model_filepath, compress=5)
     
 
 
 def main():
-    if True:
+    if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)

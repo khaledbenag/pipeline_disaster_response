@@ -52,9 +52,11 @@ engine = create_engine('sqlite:///data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterTable', engine)
 
 # load model
-model = joblib.load("models/classifier.pkl")
-
-
+#model = joblib.load("models/classifier.pkl")
+import dill
+with open("models/classifier.pkl",'rb') as io:
+    model=dill.load(io)
+    
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
