@@ -54,7 +54,7 @@ df = pd.read_sql_table('DisasterTable', engine)
 # load model
 #model = joblib.load("models/classifier.pkl")
 import dill
-with open("models/classifier.pkl",'rb') as io:
+with open("models/classifier.dill",'rb') as io:
     model=dill.load(io)
     
 # index webpage displays cool visuals and receives user input text for model
